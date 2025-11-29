@@ -1,37 +1,69 @@
 const cityInput = document.querySelector('.city-input');
-const searchBtn = document.querySelector('.search-btn');
+const searchBtn = document.querySelector('.search-icon'); // Using the icon as button trigger if needed, or input enter
+const searchContainer = document.querySelector('.search-container');
 
-const weatherInfoSection = document.querySelector('.weather-info');
-const notFoundSection = document.querySelector('.not-found');
-const searchCitySection = document.querySelector('.search-city');
+const weatherMainSection = document.querySelector('.weather-main');
+const highlightsSection = document.querySelector('.highlights-section');
+const forecastSection = document.querySelector('.forecast-section');
 
-const countryTxt = document.querySelector('.container-txt'); // Fixed class name
+const notFoundOverlay = document.querySelector('.not-found-overlay');
+const searchPromptOverlay = document.querySelector('.search-prompt-overlay');
+const closeNotFoundBtn = document.querySelector('.close-btn');
+
+// Large search overlay elements
+const cityInputLarge = document.querySelector('.city-input-large');
+const searchBtnLarge = document.querySelector('.search-btn-large');
+
+// Elements to update
 const tempTxt = document.querySelector('.temp-text');
 const conditionTxt = document.querySelector('.condition-text');
-const humidityValueTxt = document.querySelector('.humidity-value-txt');
-const windValueTxt = document.querySelector('.wind-value-txt'); // Fixed selector (added dot)
-const weatherSummaryImg = document.querySelector('.weather-summary-img');
-const currentDateTxt = document.querySelector('.current-data-txt');
+const dateTxt = document.querySelector('.date-text');
+const locationTxt = document.querySelector('.location-text');
+const weatherIcon = document.querySelector('.weather-icon');
+const cityNameOverlay = document.querySelector('.city-name-overlay');
 
-const forecastItemsContainer = document.querySelector('.forecast-items-container'); // Fixed typo in class name
+// Highlights
+const windSpeedTxt = document.querySelector('.wind-speed-txt');
+const windDirectionTxt = document.querySelector('.wind-direction-txt');
+const windDirectionIcon = document.querySelector('.wind-direction-icon');
+const sunriseTxt = document.querySelector('.sunrise-txt');
+const sunsetTxt = document.querySelector('.sunset-txt');
+const humidityTxt = document.querySelector('.humidity-txt');
+const humidityBar = document.querySelector('.humidity-bar');
+const visibilityTxt = document.querySelector('.visibility-txt');
+const visibilityStatus = document.querySelector('.visibility-status');
+const pressureTxt = document.querySelector('.pressure-txt');
+const pressureStatus = document.querySelector('.pressure-status');
+const feelsLikeTxt = document.querySelector('.feels-like-txt');
+
+const forecastContainer = document.querySelector('.forecast-container');
 
 const apiKey = '9b21fd144cd1ced076dd44ee87c0fea6';
 
-searchBtn.addEventListener('click', () => {
-  const city = cityInput.value.trim();
-  if (city !== '') {
-    updateWeatherInfo(city);
-    cityInput.value = '';
+// Event Listeners
+cityInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' && cityInput.value.trim() !== '') {
+    updateWeatherInfo(cityInput.value.trim());
     cityInput.blur();
   }
 });
 
-cityInput.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter' && cityInput.value.trim() !== '') {
-    updateWeatherInfo(cityInput.value.trim());
-    cityInput.value = '';
-    cityInput.blur();
+cityInputLarge.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' && cityInputLarge.value.trim() !== '') {
+    updateWeatherInfo(cityInputLarge.value.trim());
+    cityInputLarge.blur();
   }
+});
+
+searchBtnLarge.addEventListener('click', () => {
+  if (cityInputLarge.value.trim() !== '') {
+    updateWeatherInfo(cityInputLarge.value.trim());
+  }
+});
+
+closeNotFoundBtn.addEventListener('click', () => {
+  notFoundOverlay.style.display = 'none';
+  searchPromptOverlay.style.display = 'flex'; // Go back to search prompt
 });
 
 async function getFetchData(endPoint, city) {
@@ -53,38 +85,88 @@ function getWeatherIcon(id) {
 function getCurrentDate() {
   const currentDate = new Date();
   const options = {
-    weekday: 'short',
+    weekday: 'long',
     day: '2-digit',
     month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
   };
   return currentDate.toLocaleDateString('en-GB', options);
 }
 
+function formatTime(timestamp) {
+  const date = new Date(timestamp * 1000);
+  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+}
+
+function getWindDirection(deg) {
+  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+  const index = Math.round(deg / 45) % 8;
+  return directions[index];
+}
+
+function getVisibilityStatus(visibility) {
+  if (visibility >= 10000) return "Excellent";
+  if (visibility >= 5000) return "Good";
+  if (visibility >= 2000) return "Moderate";
+  return "Poor";
+}
+
+function getPressureStatus(pressure) {
+  if (pressure < 1000) return "Low";
+  if (pressure > 1020) return "High";
+  return "Normal";
+}
+
 async function updateWeatherInfo(city) {
   const weatherData = await getFetchData('weather', city);
+
   if (weatherData.cod !== 200) {
-    showDisplaySection(notFoundSection);
+    notFoundOverlay.style.display = 'flex';
     return;
   }
 
+  // Hide overlays on success
+  notFoundOverlay.style.display = 'none';
+  searchPromptOverlay.style.display = 'none';
+
   const {
     name: country,
-    main: { temp, humidity },
+    sys: { country: countryCode, sunrise, sunset },
+    main: { temp, humidity, pressure, feels_like },
     weather: [{ id, main }],
-    wind: { speed },
+    wind: { speed, deg },
+    visibility
   } = weatherData;
 
-  countryTxt.textContent = country;
-  tempTxt.textContent = Math.round(temp) + ' °C';
+  // Update Main Info
+  locationTxt.textContent = `${country}, ${countryCode}`;
+  tempTxt.textContent = Math.round(temp) + '°C';
   conditionTxt.textContent = main;
-  humidityValueTxt.textContent = humidity + ' %';
-  windValueTxt.textContent = speed + ' M/s';
+  dateTxt.textContent = getCurrentDate();
+  weatherIcon.src = getWeatherIcon(id);
+  cityNameOverlay.textContent = country;
 
-  currentDateTxt.textContent = getCurrentDate();
-  weatherSummaryImg.src = getWeatherIcon(id); // Use correct image path if needed
+  // Update Highlights
+  windSpeedTxt.textContent = speed;
+  windDirectionTxt.textContent = getWindDirection(deg);
+  windDirectionIcon.style.transform = `rotate(${deg}deg)`; // Rotate icon
+
+  sunriseTxt.textContent = formatTime(sunrise);
+  sunsetTxt.textContent = formatTime(sunset);
+
+  humidityTxt.textContent = humidity;
+  humidityBar.style.width = `${humidity}%`;
+
+  visibilityTxt.textContent = (visibility / 1000).toFixed(1);
+  visibilityStatus.textContent = getVisibilityStatus(visibility);
+
+  pressureTxt.textContent = pressure;
+  pressureStatus.textContent = getPressureStatus(pressure);
+
+  feelsLikeTxt.textContent = Math.round(feels_like);
 
   await updateForecastsInfo(city);
-  showDisplaySection(weatherInfoSection);
 }
 
 async function updateForecastsInfo(city) {
@@ -93,7 +175,8 @@ async function updateForecastsInfo(city) {
   const timeTaken = '12:00:00';
   const todayDate = new Date().toISOString().split('T')[0];
 
-  forecastItemsContainer.innerHTML = '';
+  forecastContainer.innerHTML = '';
+
   forecastsData.list.forEach(forecastWeather => {
     if (
       forecastWeather.dt_txt.includes(timeTaken) &&
@@ -113,26 +196,20 @@ function updateForecastsItems(weatherData) {
 
   const dateTaken = new Date(date);
   const dateOptions = {
+    weekday: 'short',
     day: '2-digit',
     month: 'short',
   };
 
-  const dateResult = dateTaken.toLocaleDateString('en-US', dateOptions);
+  const dateResult = dateTaken.toLocaleDateString('en-GB', dateOptions);
 
   const forecastItem = `
     <div class="forecast-item">
-      <h5 class="forecast-item-date regular-txt">${dateResult}</h5>
+      <h5 class="forecast-item-date">${dateResult}</h5>
       <img src="${getWeatherIcon(id)}" class="forecast-item-img" />
       <h5 class="forecast-item-temp">${Math.round(temp)} °C</h5>
     </div>
   `;
 
-  forecastItemsContainer.insertAdjacentHTML('beforeend', forecastItem);
-}
-
-function showDisplaySection(section) {
-  [weatherInfoSection, searchCitySection, notFoundSection].forEach(s => {
-    s.style.display = 'none';
-  });
-  section.style.display = 'flex';
+  forecastContainer.insertAdjacentHTML('beforeend', forecastItem);
 }

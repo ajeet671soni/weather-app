@@ -1,106 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weather App</title>
-
-  <!-- External CSS -->
+  <title>Weather Dashboard</title>
   <link rel="stylesheet" href="style.css" />
-
   <script src="script.js" defer></script>
-
-  <!-- Google Material Symbols -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 </head>
+
 <body>
-  <main class="main-container">
-
-    <!-- Search Input -->
-    <header class="input-container">
-      <input class="city-input" placeholder="Search City" type="text" />
-      <button class="search-btn">
-        <span class="material-symbols-outlined">search</span>
-      </button>
-    </header>
-
-    <!-- Weather Info -->
-    <section class="weather-info" style="display: none;">
-      <div class="location-date-container">
-        <div class="location">
-          <span class="material-symbols-outlined">location_on</span>
-          <h4 class="container-txt regular-txt">Jakarta</h4>
-        </div>
-        <h5 class="current-data-txt">Wed, 07 Aug</h5>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="search-container">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="text" class="city-input" placeholder="Search for places..." />
       </div>
 
-      <div class="weather-summary-container">
-        <img src="clouds.svg" alt="Cloud Icon" class="weather-summary-img" />
-        <div class="weather-summary-info">
-          <h1 class="temp-text">29 °C</h1>
-          <h3 class="condition-text regular-txt">Clouds</h3>
-        </div>
-      </div>
+      <div class="weather-main">
+        <img src="clouds.svg" alt="Weather Icon" class="weather-icon" />
+        <h1 class="temp-text">--°C</h1>
+        <div class="condition-text">--</div>
 
-      <div class="weather-conditions-container">
-        <div class="condition-item left">
-          <span class="material-symbols-outlined">water_drop</span>
-          <div class="condition-info">
-            <h5 class="regular-txt">Humidity</h5>
-            <h5 class="humidity-value-txt">55%</h5>
+        <div class="divider"></div>
+
+        <div class="meta-info">
+          <div class="meta-item">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span class="date-text">--</span>
           </div>
-        </div>
-        <div class="condition-item right">
-          <span class="material-symbols-outlined">air</span>
-          <div class="condition-info">
-            <h5 class="regular-txt">Wind Speed</h5>
-            <h5 class="wind-value-txt">2 M/s</h5>
+          <div class="meta-item">
+            <span class="material-symbols-outlined">location_on</span>
+            <span class="location-text">--</span>
           </div>
         </div>
       </div>
 
-      <div class="forecast-items-container">
-        <div class="forecast-item">
-          <h5 class="forecast-item-date regular-txt">05 Aug</h5>
-          <img src="thunderstorm.svg" class="forecast-item-img" />
-          <h5 class="forecast-item-temp">29 °C</h5>
-        </div>
-        <div class="forecast-item">
-          <h5 class="forecast-item-date regular-txt">05 Aug</h5>
-          <img src="thunderstorm.svg" class="forecast-item-img" />
-          <h5 class="forecast-item-temp">29 °C</h5>
-        </div>
-        <div class="forecast-item">
-          <h5 class="forecast-item-date regular-txt">05 Aug</h5>
-          <img src="thunderstorm.svg" class="forecast-item-img" />
-          <h5 class="forecast-item-temp">29 °C</h5>
-        </div>
-        <div class="forecast-item">
-          <h5 class="forecast-item-date regular-txt">05 Aug</h5>
-          <img src="thunderstorm.svg" class="forecast-item-img" />
-          <h5 class="forecast-item-temp">29 °C</h5>
-        </div>
+      <div class="city-image-placeholder">
+        <h3 class="city-name-overlay">--</h3>
       </div>
-    </section>
+    </aside>
 
-    <!-- Search City Prompt -->
-    <section class="search-city section-message">
-      <img src="search-city.png" alt="Search City" />
-      <div>
-        <h1>Search City</h1>
-        <h4 class="regular-txt">Find out the weather condition of the city</h4>
-      </div>
-    </section>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Highlights Section -->
+      <section class="highlights-section">
+        <h2 class="section-title">Today's Highlights</h2>
+        <div class="highlights-grid">
 
-    <!-- Not Found Message -->
-    <section class="not-found section-message" style="display: none;">
-      <img src="not-found.png" alt="City Not Found" />
-      <div>
+          <!-- Wind Status -->
+          <div class="highlight-card">
+            <h3 class="card-title">Wind Status</h3>
+            <div class="card-value">
+              <span class="wind-speed-txt">--</span> <span class="unit">km/h</span>
+            </div>
+            <div class="card-footer">
+              <span class="material-symbols-outlined wind-direction-icon">navigation</span>
+              <span class="wind-direction-txt">--</span>
+            </div>
+          </div>
+
+          <!-- Sunrise & Sunset -->
+          <div class="highlight-card">
+            <h3 class="card-title">Sunrise & Sunset</h3>
+            <div class="sun-times">
+              <div class="sun-item">
+                <span class="material-symbols-outlined sun-icon up">arrow_circle_up</span>
+                <div class="sun-info">
+                  <span class="sun-time sunrise-txt">--</span>
+                  <span class="sun-label">Sunrise</span>
+                </div>
+              </div>
+              <div class="sun-item">
+                <span class="material-symbols-outlined sun-icon down">arrow_circle_down</span>
+                <div class="sun-info">
+                  <span class="sun-time sunset-txt">--</span>
+                  <span class="sun-label">Sunset</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Humidity -->
+          <div class="highlight-card">
+            <h3 class="card-title">Humidity</h3>
+            <div class="card-value">
+              <span class="humidity-txt">--</span> <span class="unit">%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar humidity-bar" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Visibility -->
+          <div class="highlight-card">
+            <h3 class="card-title">Visibility</h3>
+            <div class="card-value">
+              <span class="visibility-txt">--</span> <span class="unit">km</span>
+            </div>
+            <div class="card-footer">
+              <span class="visibility-status">--</span>
+            </div>
+          </div>
+
+          <!-- Air Quality / Pressure (Using Pressure for now as standard API has it) -->
+          <div class="highlight-card">
+            <h3 class="card-title">Air Pressure</h3>
+            <div class="card-value">
+              <span class="pressure-txt">--</span> <span class="unit">hPa</span>
+            </div>
+            <div class="card-footer">
+              <span class="pressure-status">--</span>
+            </div>
+          </div>
+
+          <!-- Feels Like -->
+          <div class="highlight-card">
+            <h3 class="card-title">Feels Like</h3>
+            <div class="card-value">
+              <span class="feels-like-txt">--</span> <span class="unit">°C</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Forecast Section -->
+      <section class="forecast-section">
+        <h2 class="section-title">5-Day Forecast</h2>
+        <div class="forecast-container">
+          <!-- Forecast items will be injected here -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Overlays -->
+    <div class="overlay not-found-overlay" style="display: none;">
+      <div class="message-box">
+        <img src="not-found.png" alt="Not Found" />
         <h1>City Not Found</h1>
-        <h4 class="regular-txt">Please try again with a different city name</h4>
+        <p>We couldn't find that location. Please try again.</p>
+        <button class="close-btn">Try Again</button>
       </div>
-    </section>
+    </div>
 
-  </main>
+    <div class="overlay search-prompt-overlay">
+      <div class="message-box">
+        <img src="search-city.png" alt="Search" />
+        <h1>Weather Dashboard</h1>
+        <p>Enter a city name to get detailed weather insights.</p>
+        <div class="search-box-large">
+          <input type="text" class="city-input-large" placeholder="Search city..." />
+          <button class="search-btn-large">Search</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </body>
+
 </html>
